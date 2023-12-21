@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Student;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class StudentController extends Controller
 {
@@ -35,6 +37,13 @@ class StudentController extends Controller
 		 	'email' => $request->email,
 		 	'jurusan' => $request->jurusan
 		 ];
+
+		 $validateData = $request->validate([
+			'name' => 'required',
+		 	'nim' => 'numeric|required',
+		 	'email' => 'email|required',
+		 	'jurusan' => 'required'
+		 ]);
 
 		$student = Student::create($request->all());
 
@@ -114,4 +123,52 @@ class StudentController extends Controller
 			return response()->json($response, 404);
 		}
 	}
-}
+	public function register(Request $request){
+		#menangkap inputan
+		$input = [
+			'name' => $request->name,
+			'email' => $request->email,
+			'password' => Hash::make($request->password)
+		];
+		#mengistal data ke tabel user
+		$user = User::create($input);
+		$data = [
+			'massage'=>'User is created succesfully'
+		];
+		#mengister response JSON
+		return response()->json($data,200);
+	}
+	public function login(Request $request) {
+		#menangkap input dasar 
+		$input =[
+			'email'=> $request->email,
+			'password'=> $request->password
+		];
+
+		#mengambil data DB
+		$user = user::where (['email'])->first();
+
+		#membandingkan input user dengan input DB
+		$isloginSuccesfully = (
+			$input['email'] == $user->email 
+			&&
+			Hash::check($input ['password'], $user->email)
+		);
+		if ($isloginSuccesfully){
+			#membuat token 
+			$token =$user->CreateToken('auth_token');
+			$data = [
+				'massage' => $token->plainTextToken
+			];
+			#mengembalikan respon json 
+			return response()->json($data, 200);
+		}else{
+				$data =[
+					'massage' => "Username or password is wrong"
+				];
+				return response()->json($data, 404);
+			}
+		}
+
+		
+	}
