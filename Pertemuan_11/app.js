@@ -8,7 +8,10 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded());
 
+// route definitionconst 
+router = require("./routes/api");
 app.use(router);
 
 // mendefinisikan port
 app.listen(3000);
+console.log("Server running at http://localhost:3000");    

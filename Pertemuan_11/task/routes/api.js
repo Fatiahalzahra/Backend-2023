@@ -1,23 +1,17 @@
-// import Student Controller
-const StudentController = require("../Task_Pertemuan12/controllers/StudentController");
+// Import Student Controller
+const StudentController = require("../controllers/StudentController");
 
-// import express
 const express = require("express");
-
-// make an object router
 const router = express.Router();
 
-// make home routing
 router.get("/", (req, res) => {
-    res.send("Hello Express");
-
+  res.send("Hello Fatiah");
 });
 
-// Routing for Students
 router.get("/students", StudentController.index);
 router.post("/students", StudentController.store);
 router.put("/students/:id", StudentController.update);
 router.delete("/students/:id", StudentController.destroy);
 
-// export routing
+// Export router
 module.exports = router;
